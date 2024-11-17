@@ -40,6 +40,18 @@
         </form>
     </div>
 
+    <!-- 로그인 상태 확인 및 리디렉션 코드 추가 -->
+    <script>
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                window.location.href = 'login.html';
+            }
+        }
+        window.onload = checkLoginStatus;
+    </script>
+
     <script src="js/create.js"></script>
 </body>
 </html>
