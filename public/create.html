@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>투표 생성 - PickIt</title>
+    <link rel="stylesheet" href="css/create.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>새로운 투표 생성</h2>
+        <form id="create-vote">
+            <!-- 투표 제목 입력 -->
+            <input type="text" id="title" placeholder="투표 제목" required>
+            
+            <!-- 항목 추가/삭제 -->
+            <div id="options-container">
+                <div class="option-item">
+                    <input type="text" class="option-input" placeholder="항목 1" required>
+                    <button type="button" class="remove-option-btn">삭제</button>
+                </div>
+            </div>
+            <button type="button" id="add-option-btn">+ 항목 추가</button>
+
+            <!-- 단일 선택 / 복수 선택 라디오 버튼 -->
+            <div class="selection-type">
+                <label>
+                    <input type="radio" name="selection" value="single" checked> 하나만 선택 가능
+                </label>
+                <label>
+                    <input type="radio" name="selection" value="multiple"> 복수 선택 가능
+                </label>
+            </div>
+
+            <!-- 제출 기한 -->
+            <input type="date" id="deadline" required>
+            
+            <!-- 생성 버튼 -->
+            <button type="submit" class="submit-btn">투표 생성</button>
+        </form>
+    </div>
+
+    <script src="js/create.js"></script>
+</body>
+</html>
