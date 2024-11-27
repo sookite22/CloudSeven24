@@ -1,0 +1,145 @@
+import AWS from 'aws-sdk';
+const dynamo = new AWS.DynamoDB.DocumentClient();
+const TABLE_NAME = "votes";
+
+// 공통 응답 생성 함수
+const createResponse = (statusCode, body) => ({
+    statusCode,
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+    },
+    body: JSON.stringify(body),
+});
+
+export const handler = async (event) => {
+    console.log("Lambda function invoked");
+    console.log("Received event:", JSON.stringify(event, null, 2));
+
+    try {
+        const { httpMethod, rawPath, pathParameters, body } = event;
+
+        // OPTIONS 요청 처리
+        if (httpMethod === 'OPTIONS') {
+            return createResponse(200, { message: "Preflight response" });
+        }
+
+        // 경로와 메서드에 따른 분기 처리
+        if (httpMethod === 'POST' && rawPath === '/votes') {
+            // 투표 생성
+            return await createVote(JSON.parse(body));
+        } else if (httpMethod === 'GET' && rawPath === `/votes/${pathParameters?.voteId}`) {
+            // 특정 투표 조회
+            const { voteId } = pathParameters || {};
+            return await getVote(voteId);
+        } else if (httpMethod === 'POST' && rawPath === `/votes/${pathParameters?.voteId}/submit`) {
+            // 투표 제출
+            const { voteId } = pathParameters || {};
+            return await submitVote(voteId, JSON.parse(body));
+        } else if (httpMethod === 'GET' && rawPath === `/votes/${pathParameters?.voteId}/results`) {
+            // 투표 결과 조회
+            const { voteId } = pathParameters || {};
+            return await getVoteResults(voteId);
+        } else {
+            return createResponse(404, { message: "Route not found" });
+        }
+    } catch (error) {
+        console.error("Error occurred:", error);
+        return createResponse(500, { message: "Internal Server Error", error: error.message });
+    }
+};
+
+// 투표 생성
+const createVote = async (data) => {
+    const { title, options, deadline, selectionType } = data;
+
+    if (!title || !options || !deadline || !selectionType) {
+        return createResponse(400, { message: "Missing required fields" });
+    }
+
+    const voteId = `vote_${Date.now()}`; // 고유한 ID 생성
+    const params = {
+        TableName: TABLE_NAME,
+        Item: {
+            voteId,
+            title,
+            options,
+            deadline,
+            selectionType,
+            createdAt: new Date().toISOString(),
+        },
+    };
+
+    await dynamo.put(params).promise();
+    return createResponse(200, { message: "Vote created successfully", voteId });
+};
+
+// 특정 투표 조회
+const getVote = async (voteId) => {
+    const params = {
+        TableName: TABLE_NAME,
+        Key: { voteId },
+    };
+
+    const result = await dynamo.get(params).promise();
+    if (!result.Item) {
+        return createResponse(404, { message: "Vote not found" });
+    }
+
+    return createResponse(200, result.Item);
+};
+
+// 투표 제출
+const submitVote = async (voteId, data) => {
+    const { option } = data;
+
+    if (!option) {
+        return createResponse(400, { message: "Missing vote option" });
+    }
+
+    const params = {
+        TableName: TABLE_NAME,
+        Key: { voteId },
+        UpdateExpression: "SET #opt.#voteCount = if_not_exists(#opt.#voteCount, :zero) + :inc",
+        ExpressionAttributeNames: {
+            "#opt": "options",
+            "#voteCount": option,
+        },
+        ExpressionAttributeValues: {
+            ":inc": 1,
+            ":zero": 0,
+        },
+        ReturnValues: "UPDATED_NEW",
+    };
+
+    try {
+        const result = await dynamo.update(params).promise();
+        return createResponse(200, { message: "Vote submitted successfully", updated: result.Attributes });
+    } catch (error) {
+        console.error("Error occurred while submitting vote:", error);
+        return createResponse(500, { message: "Failed to submit vote", error: error.message });
+    }
+};
+
+// 투표 결과 조회
+const getVoteResults = async (voteId) => {
+    const params = {
+        TableName: TABLE_NAME,
+        Key: { voteId },
+    };
+
+    try {
+        const result = await dynamo.get(params).promise();
+
+        if (!result.Item) {
+            return createResponse(404, { message: "Vote not found" });
+        }
+
+        const { title, options } = result.Item;
+        return createResponse(200, { title, results: options });
+    } catch (error) {
+        console.error("Error occurred while fetching vote results:", error);
+        return createResponse(500, { message: "Failed to fetch vote results", error: error.message });
+    }
+};
