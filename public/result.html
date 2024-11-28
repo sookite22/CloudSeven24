@@ -36,7 +36,7 @@
 
         function displayResults(data) {
             const container = document.getElementById('resultsContainer');
-            container.innerHTML = ''; // 이전 결과 지우기
+            container.innerHTML = ''; // 이전 결과 지우기.
 
             for (const [option, count] of Object.entries(data)) {
                 const percentage = ((count / getTotalVotes(data)) * 100).toFixed(2);
