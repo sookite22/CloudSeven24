@@ -1,17 +1,21 @@
-##24.11.28 중간 업데이트 하였습니다 <br>
+##24.11.27 중간 업데이트 하였습니다 <br>
 
-dynamodb를 이용한 회원가입을 구현해 회원가입란에 데이터 입력시 dynamodb 테이블에 저장하게 하였습니다
-그 데이터를 통한 login 구현은 아직 성공하지 못했습니다.
+dynamoDB        회원가입 구현     완료
+dynamoDB        로그인구현        진행중
 
-투표 또한 이번 주 내 구현 시 업데이트 예정입니다
+투표 시스템 아직 진행중입니다
+진행사항 날마다 커밋중
 
-lambda_create/node_modules 는 lambda에서 회원가입 구현 시 사용한 함수입니다
-lambda_login/node_modules 는 lambda에서 로그인 구현 시 사용한 함수입니다
-lambda_vote/node_modules 는 lambda에서 투표 구현 시 사용한 함수입니다
+lambda_create/node_modules - lambda 회원가입 함수 createUser
+lambda_login/node_modules - lambda 로그인 함수    loginUser
+lambda_vote/node_modules - lambda 투표 함수       vote
 
 
-##24.11.28 20시 업데이트 <br>
+##24.11.28  <br>
 
-dynamodb를 이용한 회원가입과 로그인 구현하였습니다
-회원가입시 비밀번호 해쉬화 및 저장은 구현하지 못했습니다.
-로그인 후 home.html로 이동합니다
+dynamoDB        회원가입 구현     완료
+dynamoDB        로그인구현        완료
+
+* 회원가입시 비밀번호 해쉬화 및 로그인시 해쉬화한 비밀번호 사용은 구현하지 못했습니다.
+* 회원가입 성공시 dynamoDB에 id/password 입력됩니다.
+* 로그인 성공시 home.html로 이동합니다.
