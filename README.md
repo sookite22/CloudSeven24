@@ -6,9 +6,9 @@ dynamoDB        로그인구현        진행중
 투표 시스템 아직 진행중입니다
 진행사항 날마다 커밋중
 
-lambda_create/node_modules - lambda 회원가입 함수 createUser
-lambda_login/node_modules - lambda 로그인 함수    loginUser
-lambda_vote/node_modules - lambda 투표 함수       vote
+lambda_create/node_modules - lambda 회원가입 함수 createUser  <br>
+lambda_login/node_modules - lambda 로그인 함수    loginUser  <br>
+lambda_vote/node_modules - lambda 투표 함수       vote  <br>
 
 
 ##24.11.28  <br>
