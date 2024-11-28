@@ -3,19 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인</title>
+    <title>로그인 페이지</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .login-container {
+            width: 300px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-field {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .login-button:hover {
+            background-color: #0056b3;
+        }
+        .signup-link {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h2>로그인</h2>
-    <form id="loginForm">
-        <input type="text" id="username" placeholder="아이디" required>
-        <input type="password" id="password" placeholder="비밀번호" required>
-        <button type="submit">로그인</button>
-    </form>
-    <div id="message"></div>
-
-    <!-- 회원가입으로 이동하는 링크 추가 -->
-    <p>회원이 아니신가요? <a href="signup.html">회원가입</a></p>
+    <div class="login-container">
+        <h2>로그인</h2>
+        <form id="loginForm">
+            <div class="form-field">
+                <input type="text" id="username" placeholder="아이디" required>
+            </div>
+            <div class="form-field">
+                <input type="password" id="password" placeholder="비밀번호" required>
+            </div>
+            <button class="login-button" type="submit">로그인</button>
+        </form>
+        <div id="message" class="signup-link"></div>
+        <div class="signup-link">
+            회원이 아니신가요? <a href="signup.html">회원가입</a>
+        </div>
+    </div>
 
     <script>
         const loginForm = document.getElementById('loginForm');
@@ -23,23 +95,23 @@
             event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-    
+
             try {
-                const response = await fetch('http://localhost:5500/login', {
+                // 'localhost:5500'을 EC2 퍼블릭 IP와 포트로 변경
+                const response = await fetch('http://3.36.90.156:3000/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-    
+
                 const data = await response.json();
                 if (response.ok) {
                     alert('로그인 성공!');
-                    // 로그인 상태를 localStorage에 저장
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('username', username);
+                    // JWT 토큰 저장
+                    localStorage.setItem('token', data.token);
                     window.location.href = 'home.html';
                 } else {
-                    document.getElementById('message').textContent = data.message;
+                    document.getElementById('message').textContent = data.message || '로그인 실패. 다시 시도해주세요.';
                 }
             } catch (error) {
                 console.error('로그인 요청 중 오류:', error);
@@ -47,6 +119,5 @@
             }
         });
     </script>
-    
 </body>
 </html>
