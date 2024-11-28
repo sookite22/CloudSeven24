@@ -14,7 +14,7 @@ header {
 
 /* Logo Styles */
 .logo {
-  font-size: 20px;
+  font-size: 40px;
   font-weight: bold;
   color: #ffffff;
   text-decoration: none;
@@ -26,9 +26,8 @@ header {
   color: #e3e3e3; /* Slight hover effect */
 }
 
-/* Add spacing for the content to avoid overlap with the header */
 .container {
-  margin-top: 80px; /* Adjust based on header height */
+  margin-top: 80px;
 }
 
 /* Reset and Basic Styles */
@@ -59,7 +58,7 @@ body {
 h2.login {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #42037d;
+  color: #24037d;
   font-weight: bold;
 }
 
@@ -80,7 +79,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #42037d;
+  border-color: #0f037d;
   box-shadow: 0 0 8px rgba(66, 3, 125, 0.2);
 }
 
@@ -91,14 +90,14 @@ button {
   font-size: 16px;
   font-weight: bold;
   color: white;
-  background: #42037d;
+  background: #0b037d;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 button:hover {
-  background: #6a11cb;
+  background: #1114cb;
 }
 
 /* Links */

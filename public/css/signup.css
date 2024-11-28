@@ -1,0 +1,110 @@
+/* Header Styles */
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: transparent;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Logo Styles */
+.logo {
+  font-size: 40px;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  background: rgb(255, 255, 255);
+  background-clip: text;
+}
+
+.logo:hover {
+  color: #e3e3e3; /* Slight hover effect */
+}
+
+.container {
+  margin-top: 80px;
+}
+
+/* Basic Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container for the form */
+.container {
+  background: #fff;
+  color: #333;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #6a11cb;
+  outline: none;
+  box-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
+}
+
+button {
+  background: linear-gradient(to right, #1133cb, #0b08c9);
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+#message {
+  margin-top: 10px;
+  font-size: 14px;
+  color: red;
+}
