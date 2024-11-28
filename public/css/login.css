@@ -1,64 +1,142 @@
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f4f4f4;
+/* Header Styles */
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: transparent;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Logo Styles */
+.logo {
+  font-size: 40px;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  background: rgb(255, 255, 255);
+  background-clip: text;
+}
+
+.logo:hover {
+  color: #e3e3e3; /* Slight hover effect */
 }
 
 .container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    max-width: 400px;
-    margin: 0 auto;
+  margin-top: 80px;
+}
+
+/* Reset and Basic Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(135deg, #3a43ff, #ffffff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #333;
+}
+
+/* Container */
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Login Header */
+h2.login {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #24037d;
+  font-weight: bold;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 15px;
 }
 
 input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px -10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  width: calc(100% - 20px);
+  padding: 12px 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
+input:focus {
+  outline: none;
+  border-color: #0f037d;
+  box-shadow: 0 0 8px rgba(66, 3, 125, 0.2);
+}
+
+/* Button */
 button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #42037d;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background: #0b037d;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #42037d9f;
+  background: #1114cb;
 }
 
+/* Links */
+p {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+p a {
+  color: #6a11cb;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+/* Alert Messages */
 .alert {
-    position: fixed; /* 고정된 위치 */
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 1em;
-    border-radius: 5px;
-    z-index: 1000;
-    font-size: 16px;
-    text-align: center;
-    max-width: 300px;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 16px;
+  color: white;
+  z-index: 1000;
+  max-width: 350px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .alert-success {
-    color: white;
-    background-color: #42037d;
+  background: #4c75af;
 }
 
 .alert-danger {
-    color: white;
-    background-color: red;
+  background: #f44336;
 }

@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>회원가입</title>
-</head>
-<body>
-    <h2>회원가입</h2>
-    <form id="signupForm">
-        <input type="text" id="username" placeholder="아이디" required>
-        <input type="password" id="password" placeholder="비밀번호" required>
+    <link rel="stylesheet" href="/public/css/signup.css" />
+  </head>
+  <body>
+    <header>
+      <a href="home.html" class="logo">PickIt</a>
+    </header>
+    <div class="container">
+      <h2>회원가입</h2>
+      <form id="signupForm">
+        <input type="text" id="username" placeholder="아이디" required />
+        <input type="password" id="password" placeholder="비밀번호" required />
         <button type="submit">회원가입</button>
-    </form>
-    <div id="message"></div>
+      </form>
+      <div id="message"></div>
+    </div>
 
     <script>
-        const signupForm = document.getElementById('signupForm');
-        signupForm.addEventListener('submit', async function (event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+      const signupForm = document.getElementById("signupForm");
+      signupForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
 
-            try {
-                const response = await fetch('http://localhost:5500/signup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
+        try {
+          const response = await fetch("http://localhost:5500/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
 
-                const data = await response.json();
-                if (response.ok) {
-                    alert('회원가입 성공!');
-                    window.location.href = 'login.html';
-                } else {
-                    document.getElementById('message').textContent = data.message;
-                }
-            } catch (error) {
-                console.error('회원가입 요청 중 오류 발생:', error);
-                document.getElementById('message').textContent = '서버에 접속할 수 없습니다.';
-            }
-        });
+          const data = await response.json();
+          if (response.ok) {
+            alert("회원가입 성공!");
+            window.location.href = "login.html";
+          } else {
+            document.getElementById("message").textContent = data.message;
+          }
+        } catch (error) {
+          console.error("회원가입 요청 중 오류 발생:", error);
+          document.getElementById("message").textContent =
+            "서버에 접속할 수 없습니다.";
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
