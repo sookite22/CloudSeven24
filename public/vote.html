@@ -1,37 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>투표 페이지</title>
+    <style>
+        /* 페이지 중앙 배치 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        /* 투표 컨테이너 스타일 */
+        .vote-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .vote-container h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .vote-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .vote-option:last-child {
+            border-bottom: none;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* 투표 버튼 스타일 */
+        .submit-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h2>투표하기</h2>
-    <form id="voteForm">
-        <select id="voteOption">
-            <option value="Option1">Option 1</option>
-            <option value="Option2">Option 2</option>
-            <option value="Option3">Option 3</option>
-        </select>
-        <button type="submit">투표</button>
-    </form>
-    <script>
-        const voteForm = document.getElementById('voteForm');
-        voteForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const option = document.getElementById('voteOption').value;
+    <div class="vote-container">
+        <h2 id="vote-title">투표 제목</h2>
+        <form id="voteForm">
+            <!-- 투표 항목들이 여기에 동적으로 추가됩니다 -->
+            <div id="vote-options"></div>
 
-            const response = await fetch('http://localhost:5500/vote', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ option })
+            <!-- 투표 버튼 -->
+            <button type="submit" class="submit-btn">투표 제출</button>
+        </form>
+    </div>
+
+    <script>
+        // 백엔드에서 투표 데이터를 가져와서 화면을 구성하는 함수
+        async function fetchVoteData() {
+            try {
+                // 백엔드에서 투표 데이터를 가져옵니다 (예: GET 요청)
+                const response = await fetch('http://localhost:5500/vote-data');
+                const voteData = await response.json();
+
+                // 가져온 데이터를 기반으로 화면 구성
+                document.getElementById("vote-title").textContent = voteData.title;
+
+                const voteOptionsContainer = document.getElementById("vote-options");
+                voteOptionsContainer.innerHTML = ''; // 기존 내용 초기화
+
+                // 옵션 생성 (단일 선택 또는 다중 선택)
+                voteData.options.forEach((option, index) => {
+                    const optionDiv = document.createElement("div");
+                    optionDiv.className = "vote-option";
+                    
+                    const input = document.createElement("input");
+                    input.type = voteData.selectionType === "single" ? "radio" : "checkbox";
+                    input.name = "vote-option";
+                    input.value = option;
+                    input.id = `option-${index}`;
+                    
+                    const label = document.createElement("label");
+                    label.htmlFor = `option-${index}`;
+                    label.textContent = option;
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    voteOptionsContainer.appendChild(optionDiv);
+                });
+            } catch (error) {
+                console.error("투표 데이터를 가져오는 중 오류 발생:", error);
+            }
+        }
+
+        // 페이지가 로드되면 투표 데이터를 가져와 화면을 구성
+        window.onload = fetchVoteData;
+
+        // 투표 제출 이벤트 핸들러
+        document.getElementById("voteForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const selectedOptions = [];
+            document.querySelectorAll("input[name='vote-option']:checked").forEach((checkbox) => {
+                selectedOptions.push(checkbox.value);
             });
 
-            if (response.ok) {
-                alert('투표가 완료되었습니다!');
-                window.location.href = 'results.html';
-            } else {
-                alert('투표 중 오류가 발생했습니다.');
+            if (selectedOptions.length === 0) {
+                alert("옵션을 선택하세요.");
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5500/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ options: selectedOptions })
+                });
+
+                if (response.ok) {
+                    alert("투표가 완료되었습니다!");
+                    window.location.href = "result.html"; // 결과 페이지로 리디렉션
+                } else {
+                    alert("투표 중 오류가 발생했습니다.");
+                }
+            } catch (error) {
+                console.error("투표 요청 중 오류:", error);
             }
         });
     </script>
