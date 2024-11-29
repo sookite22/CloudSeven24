@@ -357,6 +357,39 @@ app.post('/api/vote', async (req, res) => {
     }
 });
 
+app.get('/api/vote/results/:voteId', async (req, res) => {
+    const { voteId } = req.params;
+
+    try {
+        console.log(`Fetching results for voteId: ${voteId}`);
+
+        const command = new GetItemCommand({
+            TableName: TABLE_NAME, // 실제 테이블 이름
+            Key: { id: { S: voteId } },
+        });
+
+        const result = await dynamoClient.send(command);
+
+        if (!result.Item) {
+            return res.status(404).json({ error: 'Vote not found' });
+        }
+
+        const options = result.Item.options.M;
+        const parsedOptions = Object.entries(options).reduce((acc, [key, value]) => {
+            acc[key] = parseInt(value.N, 10); // 숫자로 변환
+            return acc;
+        }, {});
+
+        res.json({
+            title: result.Item.title.S,
+            options: parsedOptions,
+        });
+    } catch (error) {
+        console.error('Error fetching vote results:', error);
+        res.status(500).json({ error: 'Failed to fetch vote results' });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);

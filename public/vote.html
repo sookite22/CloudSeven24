@@ -111,7 +111,8 @@
     
                 if (response.ok) {
                     alert('투표가 완료되었습니다!');
-                    window.location.href = 'results.html';
+                    window.location.href = `results.html?voteId=${voteId}`;
+
                 } else {
                     const errorData = await response.json();
                     console.error('Error submitting vote:', errorData);
