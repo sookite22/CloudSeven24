@@ -1,5 +1,4 @@
 const express = require('express');
-const fs = require('fs');
 const cors = require('cors');
 const app = express();
 const port = 5500;
@@ -10,7 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const { DynamoDBClient, PutItemCommand, GetItemCommand, UpdateItemCommand ,ScanCommand} = require('@aws-sdk/client-dynamodb');
 
 const dynamoClient = new DynamoDBClient({
-    region: "ap-northeast-2", // 기본값으로 사용
+    region: "ap-northeast-2", 
     credentials: {
         accessKeyId: "AKIATQPD7DI7P76WWXLP",
         secretAccessKey: "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"
@@ -24,18 +23,11 @@ app.use(express.static('public'));
 
 const TABLE_NAME = 'UserLeaderBoard';
 
-// 사용자 데이터 로드 함수
-function loadUsers() {
-    if (fs.existsSync(usersFile)) {
-        const data = fs.readFileSync(usersFile);
-        return JSON.parse(data);
-    }
-    return [];
-}
+
 const updateVoteOption = async (voteId, option) => {
     try {
         const updateCommand = new UpdateItemCommand({
-            TableName: TABLE_NAME,  // 실제 DynamoDB 테이블 이름으로 수정
+            TableName: TABLE_NAME,  
             Key: { id: { S: voteId } },  // voteId를 기준으로 업데이트할 항목 선택
             UpdateExpression: 'ADD options.#opt :inc', // 옵션별 투표 수 증가
             ExpressionAttributeNames: {
@@ -60,7 +52,7 @@ const updateVoteOption = async (voteId, option) => {
 const getVoteById= async (voteId) => {
     try {
         const command = new GetItemCommand({
-            TableName: TABLE_NAME,  // 실제 테이블 이름
+            TableName: TABLE_NAME,  
             Key: { id: { S: voteId } },
         });
 
@@ -364,7 +356,7 @@ app.get('/api/vote/results/:voteId', async (req, res) => {
         console.log(`Fetching results for voteId: ${voteId}`);
 
         const command = new GetItemCommand({
-            TableName: TABLE_NAME, // 실제 테이블 이름
+            TableName: TABLE_NAME, 
             Key: { id: { S: voteId } },
         });
 

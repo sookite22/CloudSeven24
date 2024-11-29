@@ -73,8 +73,7 @@
                 optionInput.value = option;
                 optionInput.id = `option-${option}`;
     
-                optionLabel.htmlFor = `option-${option}`;
-                optionLabel.textContent = `${option} (현재 투표 수: ${vote.options[option]})`;
+                optionLabel.textContent = `${option} `;
     
                 optionWrapper.appendChild(optionInput);
                 optionWrapper.appendChild(optionLabel);

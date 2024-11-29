@@ -21,9 +21,5 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = 'login.html';
     });
 
-    const voteBtn = document.getElementById('vote-btn');
-    voteBtn.addEventListener('click',function(){
-        window.location.href = 'login.html';
-    })
 
 });
