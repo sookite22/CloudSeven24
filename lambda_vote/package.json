@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+<<<<<<< HEAD:package.json
+    "amazon-cognito-identity-js": "^6.3.12",
+=======
+>>>>>>> ChoiInnyoung:lambda_vote/package.json
+    "aws-sdk": "^2.1692.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1"
+  }
+}
