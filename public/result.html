@@ -1,24 +1,58 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>투표 결과</title>
-    <link rel="stylesheet" href="result.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .result-bar {
+            background-color: #007bff;
+            color: white;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>투표 결과</h1>
-    </header>
+    <h2>투표 결과</h2>
+    <div id="resultsContainer"></div>
 
-    <main>
-        <section id="result-section">
-            <h2 id="vote-title">좋아하는 색상 투표</h2>
-            <canvas id="result-chart"></canvas>
-            <p id="total-votes">총 투표 수: <span id="total-votes-count">0</span></p>
-        </section>
-    </main>
-    <script src="result.js"></script>
+    <script>
+        async function fetchResults() {
+            try {
+                const response = await fetch('http://localhost:5500/results');
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                console.error('결과를 가져오는 중 오류 발생:', error);
+            }
+        }
+
+        function displayResults(data) {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = ''; // 이전 결과 지우기.
+
+            for (const [option, count] of Object.entries(data)) {
+                const percentage = ((count / getTotalVotes(data)) * 100).toFixed(2);
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result-bar';
+                resultDiv.style.width = `${percentage}%`;
+                resultDiv.textContent = `${option}: ${count}표 (${percentage}%)`;
+                container.appendChild(resultDiv);
+            }
+        }
+
+        function getTotalVotes(data) {
+            return Object.values(data).reduce((acc, count) => acc + count, 0);
+        }
+
+        fetchResults(); // 페이지 로드 시 투표 결과 가져오기
+    </script>
 </body>
 </html>
