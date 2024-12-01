@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-    <h2>로그인</h2>
-    <form id="loginForm">
-        <input type="text" id="username" placeholder="아이디" required>
-        <input type="password" id="password" placeholder="비밀번호" required>
-        <button type="submit">로그인</button>
-    </form>
-    <div id="message"></div>
-
-    <!-- 회원가입으로 이동하는 링크 추가 -->
-    <p>회원이 아니신가요? <a href="signup.html">회원가입</a></p>
+    <div class="container">
+        <h2>로그인</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="아이디" required>
+            <input type="password" id="password" placeholder="비밀번호" required>
+            <button type="submit">로그인</button>
+        </form>
+        <div id="message"></div>
+        <p>회원이 아니신가요? <a href="signup.html">회원가입</a></p>
+    </div>
 
     <script>
         const loginForm = document.getElementById('loginForm');
@@ -23,30 +24,26 @@
             event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-    
+
             try {
                 const response = await fetch('http://localhost:5500/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-    
+
                 const data = await response.json();
                 if (response.ok) {
                     alert('로그인 성공!');
-                    // 로그인 상태를 localStorage에 저장
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('username', username);
+                    localStorage.setItem('token', data.token);
                     window.location.href = 'home.html';
                 } else {
                     document.getElementById('message').textContent = data.message;
                 }
             } catch (error) {
                 console.error('로그인 요청 중 오류:', error);
-                document.getElementById('message').textContent = '서버에 접속할 수 없습니다.';
             }
         });
     </script>
-    
 </body>
 </html>

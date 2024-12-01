@@ -1,7 +1,9 @@
+/* 기본 스타일 설정 */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f5f5f5;
 }
 
 header {
@@ -10,12 +12,19 @@ header {
     align-items: center;
     background-color: #007bff;
     color: white;
-    padding: 10px 20px;
-    margin-bottom: 20px;
+    padding: 8px 20px;  /* 세로 패딩을 줄여서 높이를 작게 */
+    margin-bottom: 0px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  /* 그림자 크기도 줄임 */
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .login-btn {
@@ -24,60 +33,107 @@ header {
     color: #007bff;
     cursor: pointer;
     font-size: 1rem;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 8px 18px;
+    border-radius: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #e6f4ff;
+    transform: scale(1.05);
 }
 
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0;
-    width: 100%;
+    padding: 40px 10%;
+    box-sizing: border-box;
 }
 
+.container h1 {
+    margin-top: 0px; /* "PickIt에 오신 것을 환영합니다!"와 상단의 간격을 줄임 */
+}
+
+.main-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* 투표 리스트 박스 가로 넓이 늘리기 */
 .vote-list {
     background-color: #ffffff;
+    max-width: 800px;  /* 리스트의 최대 너비를 늘림 */
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto;    /* 중앙 정렬 */
 }
 
+/* 제목 폰트 크기 조정 */
+.vote-list h2 {
+    font-size: 1.6rem;  /* 제목 크기 조정 */
+    color: #007bff;
+    margin-bottom: 20px;
+    font-weight: 600;
+    margin: 0 0 10px 0;  /* 제목과 투표 항목 사이의 간격을 없앰 */
+}
+
+/* 리스트 항목들 간격 조정 */
 .vote-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 15px;   /* 항목 크기 줄임 */
+    margin-bottom: 8px;  /* 항목 간격 줄임 */
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .vote-item:hover {
-    background-color: #f0f8ff;
+    background-color: #e6f7ff;
+    transform: translateY(-3px);
+}
+
+.vote-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .vote-title {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: #333;
+    font-weight: 600;
 }
 
 .vote-deadline {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: #888;
 }
 
 .vote-btn {
     background-color: #007acc;
-    color: #ffffff;
+    color: #fff;
     border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 12px 20px;
+    border-radius: 30px;
     cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .vote-btn:hover {
     background-color: #005f99;
+    transform: scale(1.05);
 }
 
 /* 새 투표 생성 버튼 스타일 */
@@ -87,8 +143,11 @@ header {
     color: #007acc;
     border: 2px dashed #007acc;
     background-color: #e6f7ff;
-    margin-top: 20px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    padding: 14px 30px;
+    margin-top: 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .create-new:hover {

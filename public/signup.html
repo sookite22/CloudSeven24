@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-    <h2>회원가입</h2>
-    <form id="signupForm">
-        <input type="text" id="username" placeholder="아이디" required>
-        <input type="password" id="password" placeholder="비밀번호" required>
-        <button type="submit">회원가입</button>
-    </form>
-    <div id="message"></div>
+    <div class="container">
+        <h2>회원가입</h2>
+        <form id="signupForm">
+            <input type="email" id="username" placeholder="이메일 (아이디)" required>
+            <input type="password" id="password" placeholder="비밀번호" required>
+            <button type="submit">회원가입</button>
+        </form>
+        <div id="message"></div>
+        <p>이미 회원이신가요? <a href="login.html">로그인</a></p>
+    </div>
 
     <script>
         const signupForm = document.getElementById('signupForm');
         signupForm.addEventListener('submit', async function (event) {
             event.preventDefault();
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+
+            // 이메일 형식 유효성 검사
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(username)) {
+                document.getElementById('message').textContent = '유효한 이메일을 입력하세요.';
+                return;
+            }
+
+            // 비밀번호 유효성 검사 (최소 6자, 숫자 및 특수문자 포함)
+            const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+            if (!passwordRegex.test(password)) {
+                document.getElementById('message').textContent = 
+                    '비밀번호는 최소 6자, 숫자 및 특수문자를 포함해야 합니다.';
+                return;
+            }
 
             try {
                 const response = await fetch('http://localhost:5500/signup', {

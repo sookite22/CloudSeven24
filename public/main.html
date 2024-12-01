@@ -21,20 +21,25 @@
         <div class="vote-list">
             <h2>현재 진행 중인 투표</h2>
             <ul id="vote-items">
-                <!-- 예시 투표 리스트 항목 -->
                 <li class="vote-item">
-                    <span class="vote-title">선호하는 프로그래밍 언어는?</span>
-                    <span class="vote-deadline">마감: 2024-11-15</span>
+                    <div class="vote-content">
+                        <span class="vote-title">선호하는 프로그래밍 언어는?</span>
+                        <span class="vote-deadline">마감: 2024-11-15</span>
+                    </div>
                     <button class="vote-btn">투표 참여</button>
                 </li>
                 <li class="vote-item">
-                    <span class="vote-title">팀 프로젝트 발표 날짜 선택</span>
-                    <span class="vote-deadline">마감: 2024-11-20</span>
+                    <div class="vote-content">
+                        <span class="vote-title">팀 프로젝트 발표 날짜 선택</span>
+                        <span class="vote-deadline">마감: 2024-11-20</span>
+                    </div>
                     <button class="vote-btn">투표 참여</button>
                 </li>
                 <li class="vote-item">
-                    <span class="vote-title">다음 주 회식 장소 추천</span>
-                    <span class="vote-deadline">마감: 2024-11-10</span>
+                    <div class="vote-content">
+                        <span class="vote-title">다음 주 회식 장소 추천</span>
+                        <span class="vote-deadline">마감: 2024-11-10</span>
+                    </div>
                     <button class="vote-btn">투표 참여</button>
                 </li>
                 
@@ -45,6 +50,8 @@
             </ul>
         </div>
     </div>
+
+    <ul id="vote-items"></ul>
 
     <!-- 스크립트 파일 -->
     <script src="js/main.js"></script>

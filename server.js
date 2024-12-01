@@ -1,55 +1,62 @@
 const express = require('express');
-const fs = require('fs');
 const cors = require('cors');
+const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+const AWS = require('aws-sdk');
+const config = require('./config.json');
+
 const app = express();
 const port = 5500;
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public'));
 
-const usersFile = 'users.json';
+AWS.config.update({ region: config.Region });
 
-// 사용자 데이터 로드 함수
-function loadUsers() {
-    if (fs.existsSync(usersFile)) {
-        const data = fs.readFileSync(usersFile);
-        return JSON.parse(data);
-    }
-    return [];
-}
-
-// 사용자 데이터 저장 함수
-function saveUsers(users) {
-    fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
-}
-
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const users = loadUsers();
-    const user = users.find(u => u.username === username && u.password === password);
-
-    if (user) {
-        return res.json({ result: 'success' });
-    } else {
-        return res.status(401).json({ result: 'fail', message: '아이디 또는 비밀번호가 잘못되었습니다.' });
-    }
-});
-
+const poolData = {
+    UserPoolId: config.UserPoolId,
+    ClientId: config.ClientId
+};
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 // 회원가입 라우트
 app.post('/signup', (req, res) => {
     const { username, password } = req.body;
-    const users = loadUsers();
-    const existingUser = users.find(u => u.username === username);
+    const attributeList = [
+        new AmazonCognitoIdentity.CognitoUserAttribute({ Name: 'email', Value: username })
+    ];
 
-    if (existingUser) {
-        return res.status(409).json({ result: 'fail', message: '이미 존재하는 사용자입니다.' });
-    }
-    
-    users.push({ username, password });
-    saveUsers(users);
-    res.json({ result: 'success' });
+    userPool.signUp(username, password, attributeList, null, (err, result) => {
+        if (err) {
+            return res.status(400).json({ result: 'fail', message: err.message });
+        }
+        res.json({ result: 'success', user: result.user.getUsername() });
+    });
+});
+
+// 로그인 라우트
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+        Username: username,
+        Password: password
+    });
+
+    const userData = {
+        Username: username,
+        Pool: userPool
+    };
+    const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+    cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: (result) => {
+            const accessToken = result.getAccessToken().getJwtToken();
+            res.json({ result: 'success', token: accessToken });
+        },
+        onFailure: (err) => {
+            res.status(401).json({ result: 'fail', message: err.message });
+        }
+    });
 });
 
 app.listen(port, () => {

@@ -6,6 +6,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    overflow-y: auto; /* 스크롤 활성화 */
 }
 
 .form-container {
@@ -13,12 +14,19 @@ body {
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 400px;
+    width: 450px;
+    max-height: 80vh; /* 화면의 80% 높이까지만 크기 제한 */
+    overflow-y: auto; /* 스크롤이 생기면 스크롤 활성화 */
 }
 
 h2 {
     color: #2563eb;
     margin-bottom: 20px;
+    position: sticky;
+    top: 30px; /* 상단에 고정 */
+    background-color: #fff; /* 배경색 추가 */
+    padding-right: 10px;
+    z-index: 1;
 }
 
 input[type="text"], input[type="date"], .option-input {
@@ -39,6 +47,7 @@ textarea {
 button {
     background-color: #3b82f6;
     color: #ffffff;
+    width: 100%;
     border: none;
     padding: 10px;
     margin-top: 10px;
@@ -51,17 +60,28 @@ button:hover {
 }
 
 .remove-option-btn {
-    background-color: #ef4444;
+    background-color: #6e6b6b;
+    width: 13%;
     margin-left: 10px;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none; /* 기본적으로 숨김 */
 }
 
 .remove-option-btn:hover {
-    background-color: #dc2626;
+    background-color: #585353;
 }
 
 #add-option-btn {
     background-color: #34d399;
     margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+    border: none;
 }
 
 .selection-type {
@@ -72,4 +92,20 @@ button:hover {
 
 label {
     font-size: 14px;
+}
+
+.option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.option-item input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+#options-container {
+    margin-bottom: 20px;
 }
