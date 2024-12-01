@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = 'login.html';
     });
 
+<<<<<<< HEAD
     // 저장된 투표 데이터를 불러와 리스트 표시
     const voteListContainer = document.getElementById('vote-items');
     const votes = JSON.parse(localStorage.getItem('votes')) || [];
@@ -52,4 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         voteListContainer.appendChild(voteItem);
     });
+=======
+
+>>>>>>> new-branch
 });

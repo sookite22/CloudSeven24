@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비밀번호 변경</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .message.error {
+            color: red;
+        }
+        .message.success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>비밀번호 변경</h2>
+    <form id="updateUserForm">
+        <label for="username">사용자 이름</label>
+        <input type="text" id="username" name="username" placeholder="사용자 이름을 입력하세요" required>
+
+        <label for="newPassword">새 비밀번호</label>
+        <input type="password" id="newPassword" name="newPassword" placeholder="새 비밀번호를 입력하세요" required>
+
+        <button id = ch_btn >비밀번호 변경</button>
+    </form>
+
+    <div class="message" id="message"></div>
+</div>
+
+<script>
+    // 비밀번호 변경 폼 제출 시 처리
+    document.getElementById('updateUserForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const newPassword = document.getElementById('newPassword').value;
+        
+        // 서버로 데이터 전송
+        try {
+            const response = await fetch('http://localhost:5500/update-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, newPassword }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('message').textContent = data.message;
+                document.getElementById('message').className = 'message success';
+                window.location.href = 'login.html';
+
+            } else {
+                document.getElementById('message').textContent = data.message;
+                document.getElementById('message').className = 'message error';
+            }
+        } catch (error) {
+            console.error('비밀번호 변경 요청 중 오류 발생:', error);
+            document.getElementById('message').textContent = '서버와의 연결이 실패했습니다.';
+            document.getElementById('message').className = 'message error';
+        }
+    });
+</script>
+
+</body>
+</html>
