@@ -1,39 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>투표 페이지</title>
+    <title>투표하기 - PickIt</title>
+    <link rel="stylesheet" href="css/vote.css">
 </head>
 <body>
-    <h2>투표하기</h2>
-    <form id="voteForm">
-        <select id="voteOption">
-            <option value="Option1">Option 1</option>
-            <option value="Option2">Option 2</option>
-            <option value="Option3">Option 3</option>
-        </select>
-        <button type="submit">투표</button>
-    </form>
-    <script>
-        const voteForm = document.getElementById('voteForm');
-        voteForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const option = document.getElementById('voteOption').value;
+    <div class="form-container">
+        <h2>투표하기</h2>
+        <form id="voteForm">
+            <!-- 옵션 리스트가 동적으로 추가될 부분 -->
+            <div id="options-container"></div>
+            <button type="submit">투표</button>
+        </form>
+    </div>
 
-            const response = await fetch('http://localhost:5500/vote', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ option })
-            });
-
-            if (response.ok) {
-                alert('투표가 완료되었습니다!');
-                window.location.href = 'results.html';
-            } else {
-                alert('투표 중 오류가 발생했습니다.');
-            }
-        });
-    </script>
+    <!-- JavaScript 파일 연결 -->
+    <script src="js/vote.js"></script>
 </body>
 </html>

@@ -20,30 +20,37 @@ export const handler = async (event) => {
     try {
         const { httpMethod, rawPath, pathParameters, body } = event;
 
+        console.log("Received rawPath:", rawPath);
+
         // OPTIONS 요청 처리
         if (httpMethod === 'OPTIONS') {
             return createResponse(200, { message: "Preflight response" });
         }
 
-        // 경로와 메서드에 따른 분기 처리
-        if (httpMethod === 'POST' && rawPath === '/votes') {
-            // 투표 생성
+        // POST /votes 또는 /test/votes 처리
+        if (httpMethod === 'POST' && (rawPath === '/votes' || rawPath === '/test/votes')) {
             return await createVote(JSON.parse(body));
-        } else if (httpMethod === 'GET' && rawPath === `/votes/${pathParameters?.voteId}`) {
-            // 특정 투표 조회
-            const { voteId } = pathParameters || {};
-            return await getVote(voteId);
-        } else if (httpMethod === 'POST' && rawPath === `/votes/${pathParameters?.voteId}/submit`) {
-            // 투표 제출
-            const { voteId } = pathParameters || {};
-            return await submitVote(voteId, JSON.parse(body));
-        } else if (httpMethod === 'GET' && rawPath === `/votes/${pathParameters?.voteId}/results`) {
-            // 투표 결과 조회
-            const { voteId } = pathParameters || {};
-            return await getVoteResults(voteId);
-        } else {
-            return createResponse(404, { message: "Route not found" });
         }
+
+        // 경로와 메서드에 따른 분기 처리
+        if (httpMethod === 'POST' && pathParameters?.voteId) {
+            if (rawPath.includes('/submit')) {
+                return await submitVote(pathParameters.voteId, JSON.parse(body));
+            }
+        } else if (httpMethod === 'GET' && pathParameters?.voteId) {
+            if (rawPath.includes('/results')) {
+                return await getVoteResults(pathParameters.voteId);
+            } else {
+                return await getVote(pathParameters.voteId);
+            }
+        }
+
+        // 추가된 로직: POST /votes 또는 /test/votes 처리
+        if (httpMethod === 'POST' && (rawPath === '/votes' || rawPath === '/test/votes')) {
+            return await createVote(JSON.parse(body));
+        }
+
+        return createResponse(404, { message: `Route not found for rawPath: ${rawPath}` });
     } catch (error) {
         console.error("Error occurred:", error);
         return createResponse(500, { message: "Internal Server Error", error: error.message });
@@ -71,8 +78,13 @@ const createVote = async (data) => {
         },
     };
 
-    await dynamo.put(params).promise();
-    return createResponse(200, { message: "Vote created successfully", voteId });
+    try {
+        await dynamo.put(params).promise();
+        return createResponse(200, { message: "Vote created successfully", voteId });
+    } catch (error) {
+        console.error("DynamoDB put error:", error);
+        return createResponse(500, { message: "Failed to create vote", error: error.message });
+    }
 };
 
 // 특정 투표 조회
@@ -82,12 +94,17 @@ const getVote = async (voteId) => {
         Key: { voteId },
     };
 
-    const result = await dynamo.get(params).promise();
-    if (!result.Item) {
-        return createResponse(404, { message: "Vote not found" });
-    }
+    try {
+        const result = await dynamo.get(params).promise();
+        if (!result.Item) {
+            return createResponse(404, { message: "Vote not found" });
+        }
 
-    return createResponse(200, result.Item);
+        return createResponse(200, result.Item);
+    } catch (error) {
+        console.error("DynamoDB get error:", error);
+        return createResponse(500, { message: "Failed to fetch vote", error: error.message });
+    }
 };
 
 // 투표 제출
@@ -117,7 +134,7 @@ const submitVote = async (voteId, data) => {
         const result = await dynamo.update(params).promise();
         return createResponse(200, { message: "Vote submitted successfully", updated: result.Attributes });
     } catch (error) {
-        console.error("Error occurred while submitting vote:", error);
+        console.error("DynamoDB update error:", error);
         return createResponse(500, { message: "Failed to submit vote", error: error.message });
     }
 };
@@ -131,7 +148,6 @@ const getVoteResults = async (voteId) => {
 
     try {
         const result = await dynamo.get(params).promise();
-
         if (!result.Item) {
             return createResponse(404, { message: "Vote not found" });
         }
@@ -139,7 +155,7 @@ const getVoteResults = async (voteId) => {
         const { title, options } = result.Item;
         return createResponse(200, { title, results: options });
     } catch (error) {
-        console.error("Error occurred while fetching vote results:", error);
+        console.error("DynamoDB get error:", error);
         return createResponse(500, { message: "Failed to fetch vote results", error: error.message });
     }
 };

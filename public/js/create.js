@@ -33,12 +33,11 @@ document.getElementById('create-vote').addEventListener('submit', async function
     }
 
     // API Gateway URL
-    const apiUrl = "https://07xbstlbu0.execute-api.ap-northeast-2.amazonaws.com/test/votes";
- // API Gateway의 엔드포인트
+    const apiUrl = "https://07xbstlbu0.execute-api.ap-northeast-2.amazonaws.com/test/votes"; // 정확한 API URL
 
     const voteData = {
         title,
-        options,
+        options: options.reduce((acc, opt) => ({ ...acc, [opt]: 0 }), {}), // 옵션 초기값 설정
         deadline,
         selectionType,
     };
