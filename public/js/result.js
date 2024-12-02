@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // 예시 데이터
 const voteData = {
     title: "좋아하는 색상 투표",
@@ -58,7 +57,8 @@ setInterval(() => {
     // 총 투표 수 갱신
     document.getElementById('total-votes-count').innerText = voteData.options.reduce((sum, option) => sum + option.votes, 0);
 }, 5000); // 5초 간격으로 업데이트
-=======
+
+//////////////////////////////////////////////////////////////////////////////////유빈
 // const express = require('express');
 // const fs = require('fs');
 // const cors = require('cors');
@@ -107,4 +107,3 @@ setInterval(() => {
 // app.listen(port, () => {
 //     console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);
 // });
->>>>>>> new-branch

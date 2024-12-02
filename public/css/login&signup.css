@@ -1,77 +1,65 @@
-/* 기본 스타일 설정 */
-body {
-    font-family: Arial, sans-serif;
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
 }
-
-/* 로그인 폼 스타일 */
-.container {
-    background: white;
-    padding: 30px 40px; /* 패딩을 좀 더 넉넉하게 */
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 그림자 크기 증가 */
+.login-container {
+    width: 300px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    max-width: 400px;
-    width: 100%;
 }
-
-/* 로그인 제목 */
-h2 {
-    font-size: 2rem;
-    color: #333;
+.login-container h2 {
     margin-bottom: 20px;
+    color: #333;
 }
-
-/* 입력 필드 스타일 */
-input {
+.form-field {
     width: 100%;
-    padding: 12px 20px;
-    margin: 10px 0;
+    margin-bottom: 15px;
+}
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 1rem;
+    box-sizing: border-box;
 }
-
-/* 버튼 스타일 */
-button {
-    padding: 12px 20px;
-    border: none;
+.login-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
     background-color: #007bff;
     color: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 15px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+    margin-top: 10px;
 }
-
-button:hover {
+.login-button:hover {
     background-color: #0056b3;
 }
-
-/* 회원가입 링크 스타일 */
-p {
-    margin-top: 20px;
-    font-size: 1rem;
+.signup-link {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #555;
 }
-
-a {
+.signup-link a {
     color: #007bff;
     text-decoration: none;
 }
-
-a:hover {
+.signup-link a:hover {
     text-decoration: underline;
-}
-
-/* 로그인 오류 메시지 스타일 */
-#message {
-    color: red;
-    font-size: 1rem;
-    margin-top: 15px;
 }
