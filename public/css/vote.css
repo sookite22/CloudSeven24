@@ -1,0 +1,84 @@
+/* Reset styles for body and html */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* 투표 컨테이너 */
+.vote-container {
+    width: 400px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* 제목 스타일 */
+.vote-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5em;
+}
+
+/* 옵션 컨테이너 */
+.options-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 옵션 간격 */
+}
+
+/* 버튼 스타일 */
+.vote-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.vote-button:hover {
+    background-color: #0056b3;
+}
+
+/* 옵션의 개별 스타일 */
+.options-container input[type="radio"], 
+.options-container input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.options-container label {
+    font-size: 1em;
+    color: #555;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+    .vote-container {
+        width: 90%;
+    }
+
+    .vote-container h2 {
+        font-size: 1.2em;
+    }
+
+    .vote-button {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+}

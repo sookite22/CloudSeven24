@@ -17,23 +17,6 @@ document.getElementById('add-option-btn').addEventListener('click', function() {
     });
 });
 
-// 투표 생성 폼 제출 시 처리
-// document.getElementById('create-vote').addEventListener('submit', function(event) {
-//     event.preventDefault();
-    
-//     const title = document.getElementById('title').value;
-//     const options = Array.from(document.querySelectorAll('.option-input')).map(input => input.value);
-//     const deadline = document.getElementById('deadline').value;
-//     const selectionType = document.querySelector('input[name="selection"]:checked').value;
-
-//     console.log('투표 제목:', title);
-//     console.log('투표 항목:', options);
-//     console.log('선택 유형:', selectionType);
-//     console.log('제출 기한:', deadline);
-    
-//     alert('투표가 생성되었습니다!');
-//     // 이후 서버로 데이터 전송 로직 추가 필요
-// });
 
 document.getElementById('create-vote').addEventListener('submit', async function (event) {
     event.preventDefault();

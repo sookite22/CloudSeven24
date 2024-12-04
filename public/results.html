@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>투표 결과</title>
+    <link rel="stylesheet" href="css/results.css">
 </head>
 <body>
-    <h2 id="voteTitle">투표 결과</h2>
-    <div id="resultsContainer">결과를 불러오는 중...</div>
-    <button id="goHomeButton">홈으로 돌아가기</button>
+    <div class="results-container">
+        <h2 id="voteTitle">투표 결과</h2>
+        <div id="resultsContainer" class="results-content">결과를 불러오는 중...</div>
+        <button id="goHomeButton" class="home-button">홈으로 돌아가기</button>
 
     <script>
         const goHomeButton = document.getElementById('goHomeButton');
@@ -30,7 +32,7 @@
         // 서버에서 결과 가져오기
         const fetchResults = async () => {
             try {
-                const response = await fetch(`/api/vote/results/${voteId}`);
+                const response = await fetch(`/api/results/${voteId}`);
                 if (!response.ok) throw new Error('Failed to fetch vote results');
 
                 const data = await response.json();

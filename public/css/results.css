@@ -1,0 +1,79 @@
+/* Reset styles for body and html */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa; /* 밝은 회색 배경 */
+}
+
+/* 결과 페이지 컨테이너 */
+.results-container {
+    width: 400px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* 제목 스타일 */
+.results-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5em;
+}
+
+/* 결과 내용 스타일 */
+.results-content {
+    width: 100%;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    color: #555;
+    font-size: 1em;
+    margin-bottom: 20px;
+    text-align: left; /* 결과 내용이 정렬되도록 설정 */
+    box-sizing: border-box;
+    overflow-y: auto; /* 내용이 길 경우 스크롤 */
+    max-height: 150px; /* 최대 높이 제한 */
+}
+
+/* 홈 버튼 스타일 */
+.home-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.home-button:hover {
+    background-color: #0056b3;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+    .results-container {
+        width: 90%;
+    }
+
+    .results-container h2 {
+        font-size: 1.2em;
+    }
+
+    .home-button {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+}

@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/login.css">
     <title>회원가입</title>
 </head>
 <body>
-    <h2>회원가입</h2>
-    <form id="signupForm">
-        <input type="text" id="username" placeholder="아이디" required>
-        <input type="password" id="password" placeholder="비밀번호" required>
-        <button type="submit">회원가입</button>
-    </form>
-    <div id="message"></div>
+    <div class="signup-container">
+        <h2>회원가입</h2>
+        <form id="signupForm">
+            <div class="form-field">
+                <input type="text" id="username" placeholder="아이디" required>
+            </div>
+            <div class="form-field">
+                <input type="password" id="password" placeholder="비밀번호" required>
+            </div>
+            <button class="signup-button" type="submit">회원가입</button>
+        </form>
+        <div id="message"></div>
+    </div>
 
     <script>
         const signupForm = document.getElementById('signupForm');

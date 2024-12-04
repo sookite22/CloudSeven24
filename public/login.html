@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인</title>
+    <link rel="stylesheet" href="css/login.css">
+    <title>로그인 페이지</title>
 </head>
 <body>
-    <h2>로그인</h2>
-    <form id="loginForm">
-        <input type="text" id="username" placeholder="아이디" required>
-        <input type="password" id="password" placeholder="비밀번호" required>
-        <button type="submit">로그인</button>
-    </form>
-    <div id="message"></div>
-
-    <!-- 회원가입으로 이동하는 링크 추가 -->
-    <p>회원이 아니신가요? <a href="signup.html">회원가입</a></p>
+    <div class="login-container">
+        <h2>로그인</h2>
+        <form id="loginForm">
+            <div class="form-field">
+                <input type="text" id="username" placeholder="아이디" required>
+            </div>
+            <div class="form-field">
+                <input type="password" id="password" placeholder="비밀번호" required>
+            </div>
+            <button class="login-button" type="submit">로그인</button>
+        </form>
+        <div id="message" class="signup-link"></div>
+        <div class="signup-link">
+            회원이 아니신가요? <a href="signup.html">회원가입</a>
+        </div>
+    </div>
 
     <script>
         const loginForm = document.getElementById('loginForm');
@@ -47,6 +54,5 @@
             }
         });
     </script>
-    
 </body>
 </html>

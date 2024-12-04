@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>투표 페이지</title>
+    <link rel="stylesheet" href="css/vote.css">
 </head>
 <body>
-    <h2 id="voteTitle">투표 제목</h2>
-    <form id="voteForm">
-        <div id="voteOptionsContainer">
-            <!-- 동적으로 옵션 추가 -->
-        </div>
-        <button type="submit">투표</button>
-    </form>
+    <div class="vote-container">
+        <h2 id="voteTitle">투표 제목</h2>
+        <form id="voteForm" class="vote-form">
+            <div id="voteOptionsContainer" class="options-container">
+                <!-- 동적으로 옵션 추가 -->
+            </div>
+            <button type="submit" class="vote-button">투표</button>
+        </form>
 
     <script>
         // URL에서 voteId 가져오기
@@ -25,9 +27,7 @@
             alert('올바르지 않은 접근입니다. 홈으로 이동합니다.');
             window.location.href = 'home.html'; // 잘못된 접근 시 홈으로 리디렉션
         }
-    
-        console.log('Vote ID:', voteId); // 디버깅 로그
-    
+        
         const voteTitle = document.getElementById('voteTitle');
         const voteOptionsContainer = document.getElementById('voteOptionsContainer');
         let selectionType = '';
@@ -92,9 +92,7 @@
             const selectedOptions = Array.from(
                 document.querySelectorAll('input[name="voteOption"]:checked')
             ).map(option => option.value);
-    
-            console.log('Selected Options:', selectedOptions); // 디버깅 로그
-    
+        
             // 선택된 옵션이 없으면 경고
             if (selectedOptions.length === 0) {
                 alert('최소 하나의 옵션을 선택하세요.');
