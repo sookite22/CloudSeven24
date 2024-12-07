@@ -1,0 +1,79 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: dbqls
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: voting-app
+service: voting-app
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-northeast-2
+  logs:
+    restApi: true
+
+  environment:
+    DYNAMO_TABLE: UserLeaderBoard
+  iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:PutItem"
+          - "dynamodb:GetItem"
+          - "dynamodb:Scan"
+          - "dynamodb:Query"
+          - "dynamodb:UpdateItem"
+          - "dynamodb:DeleteItem"
+        Resource:
+          - "arn:aws:dynamodb:ap-northeast-2:*:table/UserLeaderBoard"
+      - Effect: "Allow"
+        Action:
+          - "logs:CreateLogGroup"
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+        Resource: "arn:aws:logs:ap-northeast-2:*:*"
+      - Effect: "Allow"
+        Action:
+          - "lambda:InvokeFunction"
+        Resource: "*"
+functions:
+  app:
+    handler: handler.handler
+    events:
+      - http:
+          path: votes
+          method: get
+          cors: true
+
+      - http:
+          path: votes
+          method: post
+          cors: true
+
+      - http:
+          path: vote/{id}
+          method: get
+          cors: true
+
+      - http:
+          path: vote/{id}
+          method: post
+          cors: true
+
+      - http:
+          path: results/{id}
+          method: get
+          cors: true
+
+
+resources:
+  Resources:
+    DynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: UserLeaderBoard
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
