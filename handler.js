@@ -1,4 +1,4 @@
-const { createVote, getVoteById, getResults, submitVote, getAllVotes } = require('./function/votes');
+const { createVote, getVoteById, submitVote, getAllVotes } = require('./function/votes');
 
 // Lambda 핸들러
 exports.handler = async (event) => {
@@ -21,11 +21,7 @@ exports.handler = async (event) => {
             event.pathParameters = { voteId };
             return await submitVote(event);
         }
-        if (httpMethod === 'GET' && path.startsWith('/results/')) {
-            const voteId = path.split('/')[2];
-            event.pathParameters = { voteId };
-            return await getResults(event);
-        }
+       
     
 
         return { statusCode: 404, body: JSON.stringify({ message: 'Route not found' }) };

@@ -1,10 +1,13 @@
 const { DynamoDBClient, PutItemCommand, GetItemCommand, UpdateItemCommand, ScanCommand } = require('@aws-sdk/client-dynamodb');
+const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { v4: uuidv4 } = require('uuid');
 
 const TABLE_NAME = 'UserLeaderBoard';
 const dynamoClient = new DynamoDBClient({
     region: 'ap-northeast-2',
 });
+const s3Client = new S3Client({ region: 'ap-northeast-2' });
+const S3_BUCKET_NAME = 'voteingweb'; 
 
 // 새 투표 생성
 const createVote = async (event) => {
@@ -80,16 +83,27 @@ const createVote = async (event) => {
 };
 
 // 특정 투표 조회
-const getVoteById = async (event) => {
-    const voteId = event.pathParameters.voteId;
+const getVoteById = async (eventOrVoteId) => {
+    let voteId;
+    
+    // event가 전달되었을 때, pathParameters에서 voteId를 추출
+    if (eventOrVoteId && eventOrVoteId.pathParameters) {
+        voteId = eventOrVoteId.pathParameters.voteId;
+    } else {
+        // 직접 voteId가 전달된 경우
+        voteId = eventOrVoteId;
+    }
 
     try {
+        console.log("Fetching results for voteId:", voteId);
+
         const command = new GetItemCommand({
             TableName: TABLE_NAME,
             Key: { id: { S: voteId } },
         });
 
         const data = await dynamoClient.send(command);
+        console.log("Fetched data:", JSON.stringify(data, null, 2));
 
         if (!data.Item) {
             return { statusCode: 404, body: JSON.stringify({ error: 'Vote not found' }) };
@@ -98,7 +112,7 @@ const getVoteById = async (event) => {
         const vote = {
             id: data.Item.id.S,
             title: data.Item.title.S,
-            options: data.Item.options.M,
+            options: data.Item.options.M || {},  // Map 처리 (없을 경우 빈 객체)
             selectionType: data.Item.selectionType.S,
             deadline: data.Item.deadline.S,
         };
@@ -109,6 +123,7 @@ const getVoteById = async (event) => {
         return { statusCode: 500, body: JSON.stringify({ error: 'Failed to fetch vote' }) };
     }
 };
+
 
 // 모든 투표 조회
 const getAllVotes = async () => {
@@ -148,7 +163,8 @@ const submitVote = async (event) => {
             return { statusCode: 400, body: JSON.stringify({ error: 'Invalid selection type' }) };
         }
 
-        const updatedVote = await getVoteById({ pathParameters: { voteId } });
+        // getVoteById 호출 시, event 객체를 그대로 전달
+        const updatedVote = await getVoteById(event);  // 여기서 event 객체를 넘겨줌
         return updatedVote;
     } catch (error) {
         console.error('Error submitting vote:', error);
@@ -173,32 +189,66 @@ const updateVoteOption = async (voteId, option) => {
         throw error;
     }
 };
-const getResults = async (voteId) => {
+// const getResults = async (voteId) => {
+//     try {
+//         console.log("Fetching results for voteId:", voteId);
+
+//         const command = new GetItemCommand({
+//             TableName: TABLE_NAME,
+//             Key: { id: { S: voteId } },  // Key 타입 확인
+//         });
+
+//         const data = await dynamoClient.send(command);
+//         console.log("Fetched data:", JSON.stringify(data, null, 2));
+
+//         if (!data.Item) {
+//             return { statusCode: 404, body: JSON.stringify({ error: 'Vote not found' }) };
+//         }
+
+//         const results = {
+//             id: data.Item.id ? data.Item.id.S : 'N/A',
+//             title: data.Item.title ? data.Item.title.S : 'No title',
+//             options: data.Item.options ? data.Item.options.M : {},  // Map 처리
+//             selectionType: data.Item.selectionType ? data.Item.selectionType.S : 'Unknown',
+//             deadline: data.Item.deadline ? data.Item.deadline.S : 'No deadline',
+//         };
+
+//         return { statusCode: 200, body: JSON.stringify(results) };
+//     } catch (error) {
+//         console.error('Error fetching vote results:', error.message);  // 더 구체적인 에러 메시지 출력
+//         return { statusCode: 500, body: JSON.stringify({ error: 'Failed to fetch vote results' }) };
+//     }
+// };
+const uploadFileToS3 = async (fileName, fileContent) => {
     try {
-        const command = new GetItemCommand({
-            TableName: 'UserLeaderBoard',
-            Key: { id: { S: voteId } },
+        const command = new PutObjectCommand({
+            Bucket: S3_BUCKET_NAME,
+            Key: fileName,
+            Body: fileContent,
         });
 
-        const data = await dynamoClient.send(command);
-
-        if (!data.Item) {
-            return { statusCode: 404, body: JSON.stringify({ error: 'Vote not found' }) };
-        }
-
-        const results = {
-            id: data.Item.id.S,
-            title: data.Item.title.S,
-            options: data.Item.options.M,
-            selectionType: data.Item.selectionType.S,
-            deadline: data.Item.deadline.S,
-        };
-
-        return { statusCode: 200, body: JSON.stringify(results) };
+        const data = await s3Client.send(command);
+        console.log('File uploaded successfully:', data);
+        return { statusCode: 200, body: JSON.stringify({ message: 'File uploaded successfully' }) };
     } catch (error) {
-        console.error('Error fetching vote results:', error);
-        return { statusCode: 500, body: JSON.stringify({ error: 'Failed to fetch vote results' }) };
+        console.error('Error uploading file to S3:', error);
+        return { statusCode: 500, body: JSON.stringify({ error: 'Failed to upload file' }) };
+    }
+};
+const getFileFromS3 = async (fileName) => {
+    try {
+        const command = new GetObjectCommand({
+            Bucket: S3_BUCKET_NAME,
+            Key: fileName,
+        });
+
+        const data = await s3Client.send(command);
+        console.log('File retrieved successfully:', data);
+        return { statusCode: 200, body: JSON.stringify({ message: 'File retrieved successfully', data }) };
+    } catch (error) {
+        console.error('Error retrieving file from S3:', error);
+        return { statusCode: 500, body: JSON.stringify({ error: 'Failed to retrieve file' }) };
     }
 };
 
-module.exports = {  createVote, getVoteById, getResults, submitVote, getAllVotes  };
+module.exports = {  createVote, getVoteById, submitVote, getAllVotes, uploadFileToS3, getFileFromS3 };
