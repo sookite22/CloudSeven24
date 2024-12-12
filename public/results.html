@@ -32,7 +32,7 @@
         // 서버에서 결과 가져오기
         const fetchResults = async () => {
             try {
-                const response = await fetch(`/api/results/${voteId}`);
+                const response = await fetch(`https://ttny7pmcv4.execute-api.ap-northeast-2.amazonaws.com/dev/results/${voteId}`);
                 if (!response.ok) throw new Error('Failed to fetch vote results');
 
                 const data = await response.json();

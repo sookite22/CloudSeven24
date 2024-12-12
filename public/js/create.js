@@ -32,7 +32,7 @@ document.getElementById('create-vote').addEventListener('submit', async function
     }
 
     try {
-        const response = await fetch('/api/votes', {
+        const response = await fetch('https://ttny7pmcv4.execute-api.ap-northeast-2.amazonaws.com/dev/votes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title, options, deadline, selectionType }),

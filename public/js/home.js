@@ -44,20 +44,23 @@ document.addEventListener('DOMContentLoaded', async function () {
     // 서버에서 투표 데이터를 가져오는 함수
     const fetchVotes = async () => {
         try {
-            const response = await fetch('/api/votes'); // 서버 API 호출
+            // API Gateway의 엔드포인트 URL 명시적으로 지정
+            const response = await fetch('https://ttny7pmcv4.execute-api.ap-northeast-2.amazonaws.com/dev/votes'); 
             if (!response.ok) throw new Error('Failed to fetch votes');
             return await response.json(); // JSON 데이터 반환
         } catch (error) {
             console.error('Error fetching votes:', error);
-            return [];
+            return []; // 오류 발생 시 빈 배열 반환
         }
     };
 
-    // 투표 리스트 렌더링 함수
     const renderVotes = async () => {
-        const votes = await fetchVotes();
+        const votes = await fetchVotes(); // 서버에서 투표 데이터를 가져옴
+        const voteList = document.querySelector('#vote-list'); // HTML에서 투표 목록을 렌더링할 요소 선택
+    
         voteList.innerHTML = ''; // 기존 리스트 초기화
-
+    
+        // 투표 데이터를 기반으로 리스트 생성
         votes.forEach(vote => {
             // title이 없는 항목은 건너뜁니다.
             if (!vote.title) return;
@@ -70,14 +73,15 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <button class="vote-btn">투표 참여</button>
             `;
             voteList.appendChild(listItem);
-            
+    
             // 투표 참여 버튼 클릭 이벤트
             const voteButton = listItem.querySelector('.vote-btn');
             voteButton.addEventListener('click', () => {
+                // 투표 ID를 쿼리 파라미터로 전달하여 `vote.html`로 이동
                 window.location.href = `vote.html?voteId=${vote.id}`;
+            });
         });
-        });
-
+    
         // 새 투표 생성 버튼 추가
         const createVoteItem = document.createElement('li');
         createVoteItem.className = 'vote-item create-new';
@@ -86,17 +90,24 @@ document.addEventListener('DOMContentLoaded', async function () {
             <span class="vote-title">+ 새 투표 생성</span>
         `;
         voteList.appendChild(createVoteItem);
-
+    
         // 새 투표 생성 버튼 클릭 이벤트
         createVoteItem.addEventListener('click', () => {
+            // 새 투표 생성 페이지로 이동
             window.location.href = 'create.html';
         });
     };
 
     // 초기화 수행
-    if (initializeUserState()) {
-        setupSidebar();
-        setupLogout();
-        await renderVotes(); // 투표 리스트 렌더링
-    }
+    const setupPage = async () => {
+        try {
+            setupSidebar(); // 사이드바 설정 (필요한 경우 정의)
+            setupLogout();  // 로그아웃 설정 (필요한 경우 정의)
+            await renderVotes(); // 투표 리스트 렌더링
+        } catch (error) {
+            console.error('Error during page setup:', error);
+        }
+    };
+    document.addEventListener('DOMContentLoaded', setupPage);
+
 });

@@ -32,22 +32,26 @@
         const voteOptionsContainer = document.getElementById('voteOptionsContainer');
         let selectionType = '';
     
-        // 서버에서 투표 데이터를 가져오는 함수
+       // 서버에서 투표 데이터를 가져오는 함수
         const fetchVoteDetails = async () => {
             try {
-                const response = await fetch(`/api/vote/${voteId}`);
-                if (!response.ok) throw new Error('Failed to fetch vote details');
-    
+                // voteId를 URL에서 추출
+                const voteId = new URLSearchParams(window.location.search).get('voteId');
+                if (!voteId) {
+                    alert('투표 ID가 없습니다.');
+                    return null;
+                }
+
+                const response = await fetch(`https://ttny7pmcv4.execute-api.ap-northeast-2.amazonaws.com/dev/vote/${voteId}`);
+                if (!response.ok) throw new Error('투표 정보를 가져올 수 없습니다.');
+
                 const vote = await response.json();
-    
-                // selectionType 설정
-                selectionType = vote.selectionType;
-    
+
                 return vote;
             } catch (error) {
                 console.error('Error fetching vote details:', error);
-                alert('투표 정보를 불러올 수 없습니다. 홈으로 이동합니다.');
-                window.location.href = 'home.html'; // 오류 시 리디렉션
+                alert('투표 정보를 불러올 수 없습니다.');
+                return null;
             }
         };
     
@@ -84,42 +88,64 @@
         renderVoteDetails();
     
         // 투표 제출 처리
-        const voteForm = document.getElementById('voteForm');
-        voteForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-    
-            // 선택된 옵션들 가져오기
-            const selectedOptions = Array.from(
-                document.querySelectorAll('input[name="voteOption"]:checked')
-            ).map(option => option.value);
-        
-            // 선택된 옵션이 없으면 경고
-            if (selectedOptions.length === 0) {
-                alert('최소 하나의 옵션을 선택하세요.');
-                return;
-            }
-    
-            try {
-                const response = await fetch('/api/vote', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ voteId, options: selectedOptions, selectionType })  // selectionType 추가
-                });
-    
-                if (response.ok) {
-                    alert('투표가 완료되었습니다!');
-                    window.location.href = `results.html?voteId=${voteId}`;
+        // 투표 제출 처리
+const voteForm = document.getElementById('voteForm');
+voteForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-                } else {
-                    const errorData = await response.json();
-                    console.error('Error submitting vote:', errorData);
-                    alert(`투표 중 오류가 발생했습니다: ${errorData.error || 'Unknown error'}`);
-                }
-            } catch (error) {
-                console.error('Error submitting vote:', error);
-                alert('투표 중 예기치 않은 오류가 발생했습니다.');
-            }
+    // URL에서 voteId 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const voteId = urlParams.get('voteId'); // voteId 추출
+
+    // 선택된 옵션들 가져오기
+    const selectedOptions = Array.from(
+        document.querySelectorAll('input[name="voteOption"]:checked')
+    ).map(option => option.value);
+
+    // selectionType 확인 (서버에서 예상)
+    const selectionType = document.querySelector('input[name="selectionType"]')?.value || 'single';
+
+    // 필수 데이터 검증
+    if (!voteId) {
+        console.error('voteId is missing');
+        alert('올바르지 않은 투표 ID입니다.');
+        return;
+    }
+
+    if (selectedOptions.length === 0) {
+        alert('최소 하나의 옵션을 선택하세요.');
+        return;
+    }
+
+    try {
+        // 요청 데이터 준비
+        const requestData = {
+            voteId: voteId,
+            options: selectedOptions,
+            selectionType: selectionType,
+        };
+
+        console.log('Submitting vote with data:', requestData); // 디버깅용 로그
+
+        const response = await fetch(`https://ttny7pmcv4.execute-api.ap-northeast-2.amazonaws.com/dev/vote/${voteId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData), // JSON 형식의 본문
         });
+
+        if (response.ok) {
+            alert('투표가 완료되었습니다!');
+            window.location.href = `results.html?voteId=${voteId}`;
+        } else {
+            const errorData = await response.json();
+            console.error('Error submitting vote:', errorData);
+            alert(`투표 중 오류가 발생했습니다: ${errorData.error || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error submitting vote:', error);
+        alert('투표 중 예기치 않은 오류가 발생했습니다.');
+    }
+});
     </script>
     
 </body>
