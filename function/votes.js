@@ -93,6 +93,11 @@ const getVoteById = async (eventOrVoteId) => {
         // 직접 voteId가 전달된 경우
         voteId = eventOrVoteId;
     }
+    // voteId가 유효하지 않은 경우
+    if (!voteId) {
+        console.error("Vote ID is missing or invalid.");
+        return { statusCode: 400, body: JSON.stringify({ error: 'Vote ID is required' }) };
+    }
 
     try {
         console.log("Fetching results for voteId:", voteId);
@@ -219,6 +224,66 @@ const updateVoteOption = async (voteId, option) => {
 //         return { statusCode: 500, body: JSON.stringify({ error: 'Failed to fetch vote results' }) };
 //     }
 // };
+// 투표 결과를 DynamoDB에서 조회하는 함수
+const getResults = async (eventOrVoteId) => {
+    let voteId;
+
+    // pathParameters에서 voteId를 추출
+    if (eventOrVoteId && eventOrVoteId.pathParameters && eventOrVoteId.pathParameters.id) {
+        voteId = eventOrVoteId.pathParameters.id;
+    } else {
+        // 직접 voteId가 전달된 경우
+        voteId = eventOrVoteId;
+    }
+
+    if (!voteId) {
+        console.error("Vote ID is missing or invalid.");
+        return { statusCode: 400, body: JSON.stringify({ error: 'Vote ID is required' }) };
+    }
+
+    // URL 디코딩하여 잘못된 인코딩 문자 제거
+    voteId = decodeURIComponent(voteId);
+    console.log("Decoded voteId:", voteId);
+
+    try {
+        console.log("Fetching results for voteId:", voteId);
+
+        const command = new GetItemCommand({
+            TableName: TABLE_NAME,
+            Key: { id: { S: voteId } },
+        });
+
+        const data = await dynamoClient.send(command);
+        console.log("Fetched data:", JSON.stringify(data, null, 2));
+
+        if (!data.Item) {
+            return { statusCode: 404, body: JSON.stringify({ error: 'Vote not found' }) };
+        }
+
+        // 투표 결과 처리
+        const vote = {
+            id: data.Item.id.S,
+            title: data.Item.title.S,
+            options: {}, // 선택지별 카운트
+        };
+
+        const options = data.Item.options.M || {}; // Map 형식의 options 처리
+
+        // options의 각 항목을 카운트로 변환
+        for (const [key, value] of Object.entries(options)) {
+            vote.options[key] = parseInt(value.N, 10); // 숫자로 변환하여 카운트 저장
+        }
+
+        return { statusCode: 200, body: JSON.stringify(vote) };
+    } catch (error) {
+        console.error('Error fetching vote results:', error);
+        return { statusCode: 500, body: JSON.stringify({ error: 'Failed to fetch vote results' }) };
+    }
+};
+
+
+
+
 const uploadFileToS3 = async (fileName, fileContent) => {
     try {
         const command = new PutObjectCommand({
@@ -251,4 +316,4 @@ const getFileFromS3 = async (fileName) => {
     }
 };
 
-module.exports = {  createVote, getVoteById, submitVote, getAllVotes, uploadFileToS3, getFileFromS3 };
+module.exports = {  getResults, createVote, getVoteById, submitVote, getAllVotes, uploadFileToS3, getFileFromS3 };

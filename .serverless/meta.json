@@ -2246,5 +2246,21 @@
         "ExportName": "sls-voting-app-dev-ServerlessDeploymentBucketName"
       }
     ]
+  },
+  "unknown": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.15",
+    "isWithinCompose": false,
+    "composeOrgName": null,
+    "composeServiceName": null,
+    "command": [],
+    "options": {},
+    "error": null,
+    "machineId": "9e424ff379e5fb14c98c679b8a56b0fd",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
   }
 }
