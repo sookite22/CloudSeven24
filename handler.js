@@ -1,4 +1,4 @@
-const { createVote, getVoteById, submitVote, getAllVotes, getResults } = require('./function/votes');
+const { createVote, getVoteById, submitVote, getAllVotes, getVoteResultsById } = require('./function/votes');
 
 // Lambda 핸들러
 exports.handler = async (event) => {
@@ -44,14 +44,15 @@ exports.handler = async (event) => {
             };
         }
         if (httpMethod === 'GET' && path.startsWith('/results/')) {
-            const voteId = path.split('/')[3]; // 결과를 조회하는 경로 처리
-            event.pathParameters = { id: voteId }; // voteId를 pathParameters에 할당
-            const response = await getResults(event); // getVoteById 함수 호출
+            const voteId = path.split('/')[2]; // 경로에서 voteId 추출
+            event.pathParameters = { voteId }; // pathParameters에 voteId 설정
+            const response = await getVoteResultsById(event); // 결과 조회 함수 호출
             return {
                 ...response,
-                headers: { ...corsHeaders, ...(response.headers || {}) }, // CORS 헤더 추가
+                headers: { ...corsHeaders, ...(response.headers || {}) }, // CORS 헤더 병합
             };
         }
+        
         return {
             statusCode: 404,
             headers: corsHeaders,

@@ -194,60 +194,28 @@ const updateVoteOption = async (voteId, option) => {
         throw error;
     }
 };
-// const getResults = async (voteId) => {
-//     try {
-//         console.log("Fetching results for voteId:", voteId);
 
-//         const command = new GetItemCommand({
-//             TableName: TABLE_NAME,
-//             Key: { id: { S: voteId } },  // Key 타입 확인
-//         });
-
-//         const data = await dynamoClient.send(command);
-//         console.log("Fetched data:", JSON.stringify(data, null, 2));
-
-//         if (!data.Item) {
-//             return { statusCode: 404, body: JSON.stringify({ error: 'Vote not found' }) };
-//         }
-
-//         const results = {
-//             id: data.Item.id ? data.Item.id.S : 'N/A',
-//             title: data.Item.title ? data.Item.title.S : 'No title',
-//             options: data.Item.options ? data.Item.options.M : {},  // Map 처리
-//             selectionType: data.Item.selectionType ? data.Item.selectionType.S : 'Unknown',
-//             deadline: data.Item.deadline ? data.Item.deadline.S : 'No deadline',
-//         };
-
-//         return { statusCode: 200, body: JSON.stringify(results) };
-//     } catch (error) {
-//         console.error('Error fetching vote results:', error.message);  // 더 구체적인 에러 메시지 출력
-//         return { statusCode: 500, body: JSON.stringify({ error: 'Failed to fetch vote results' }) };
-//     }
-// };
 // 투표 결과를 DynamoDB에서 조회하는 함수
-const getResults = async (eventOrVoteId) => {
+const getVoteResultsById = async (eventOrVoteId) => {
     let voteId;
 
-    // pathParameters에서 voteId를 추출
-    if (eventOrVoteId && eventOrVoteId.pathParameters && eventOrVoteId.pathParameters.id) {
-        voteId = eventOrVoteId.pathParameters.id;
+    // event에서 voteId 추출
+    if (eventOrVoteId && eventOrVoteId.pathParameters) {
+        voteId = eventOrVoteId.pathParameters.voteId;
     } else {
-        // 직접 voteId가 전달된 경우
-        voteId = eventOrVoteId;
+        voteId = eventOrVoteId; // 직접 전달된 voteId 처리
     }
 
+    // voteId가 유효하지 않을 경우 에러 반환
     if (!voteId) {
         console.error("Vote ID is missing or invalid.");
         return { statusCode: 400, body: JSON.stringify({ error: 'Vote ID is required' }) };
     }
 
-    // URL 디코딩하여 잘못된 인코딩 문자 제거
-    voteId = decodeURIComponent(voteId);
-    console.log("Decoded voteId:", voteId);
-
     try {
         console.log("Fetching results for voteId:", voteId);
 
+        // DynamoDB에서 투표 결과 조회
         const command = new GetItemCommand({
             TableName: TABLE_NAME,
             Key: { id: { S: voteId } },
@@ -257,30 +225,28 @@ const getResults = async (eventOrVoteId) => {
         console.log("Fetched data:", JSON.stringify(data, null, 2));
 
         if (!data.Item) {
-            return { statusCode: 404, body: JSON.stringify({ error: 'Vote not found' }) };
+            return { statusCode: 404, body: JSON.stringify({ error: 'Vote results not found' }) };
         }
 
-        // 투표 결과 처리
-        const vote = {
-            id: data.Item.id.S,
+        // DynamoDB에서 데이터 가공
+        const options = data.Item.options.M || {}; // 투표 항목 (Map)
+        const formattedOptions = Object.keys(options).reduce((acc, key) => {
+            acc[key] = parseInt(options[key].N || '0', 10); // 숫자형 변환
+            return acc;
+        }, {});
+
+        // 결과 형식에 맞게 반환 객체 구성
+        const voteResults = {
             title: data.Item.title.S,
-            options: {}, // 선택지별 카운트
+            options: formattedOptions, // 투표 항목 결과
         };
 
-        const options = data.Item.options.M || {}; // Map 형식의 options 처리
-
-        // options의 각 항목을 카운트로 변환
-        for (const [key, value] of Object.entries(options)) {
-            vote.options[key] = parseInt(value.N, 10); // 숫자로 변환하여 카운트 저장
-        }
-
-        return { statusCode: 200, body: JSON.stringify(vote) };
+        return { statusCode: 200, body: JSON.stringify(voteResults) };
     } catch (error) {
         console.error('Error fetching vote results:', error);
         return { statusCode: 500, body: JSON.stringify({ error: 'Failed to fetch vote results' }) };
     }
 };
-
 
 
 
@@ -316,4 +282,4 @@ const getFileFromS3 = async (fileName) => {
     }
 };
 
-module.exports = {  getResults, createVote, getVoteById, submitVote, getAllVotes, uploadFileToS3, getFileFromS3 };
+module.exports = {  getVoteResultsById, createVote, getVoteById, submitVote, getAllVotes, uploadFileToS3, getFileFromS3 };
