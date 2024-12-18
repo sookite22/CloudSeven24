@@ -1,48 +1,37 @@
-const express = require('express');
-const fs = require('fs');
-const cors = require('cors');
-const app = express();
-const port = 5500;
+// result.js
+async function fetchResults() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const voteId = urlParams.get('id');  // URL에서 투표 ID를 추출
 
-app.use(express.json());
-app.use(cors());
-
-const resultsFile = 'results.json';
-
-// 투표 데이터 로드 함수
-function loadResults() {
-    if (fs.existsSync(resultsFile)) {
-        const data = fs.readFileSync(resultsFile, 'utf8');
-        return JSON.parse(data);
+    try {
+        // 백엔드에서 투표 결과 데이터를 가져옵니다 (예: GET 요청)
+        const response = await fetch(`http://54.180.131.78:3000/vote/${voteId}/results`);
+        const data = await response.json();
+        displayResults(data);
+    } catch (error) {
+        console.error('결과를 가져오는 중 오류 발생:', error);
     }
-    return {};
 }
 
-// 투표 데이터 저장 함수
-function saveResults(results) {
-    fs.writeFileSync(resultsFile, JSON.stringify(results, null, 2), 'utf8');
+function displayResults(data) {
+    const container = document.getElementById('resultsContainer');
+    container.innerHTML = ''; // 이전 결과 지우기
+
+    // 각 항목의 결과 표시
+    for (const [option, count] of Object.entries(data)) {
+        const percentage = ((count / getTotalVotes(data)) * 100).toFixed(2);  // 백분율 계산
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-bar';
+        resultDiv.style.width = `${percentage}%`;  // 백분율에 맞게 너비 설정
+        resultDiv.textContent = `${option}: ${count}표 (${percentage}%)`;
+        container.appendChild(resultDiv);
+    }
 }
 
-// 투표하기
-app.post('/vote', (req, res) => {
-    const { option } = req.body;
-    const results = loadResults();
+function getTotalVotes(data) {
+    // 전체 투표 수 계산
+    return Object.values(data).reduce((acc, count) => acc + count, 0);
+}
 
-    if (results[option]) {
-        results[option]++;
-    } else {
-        results[option] = 1;
-    }
-    saveResults(results);
-    res.json({ result: 'success' });
-});
-
-// 투표 결과 조회
-app.get('/results', (req, res) => {
-    const results = loadResults();
-    res.json(results);
-});
-
-app.listen(port, () => {
-    console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);
-});
+// 페이지 로드 시 투표 결과 가져오기
+window.onload = fetchResults;
