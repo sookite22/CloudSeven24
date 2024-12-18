@@ -1,58 +1,28 @@
+<!-- result.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>투표 결과</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .result-bar {
-            background-color: #007bff;
-            color: white;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/result.css">  <!-- 외부 CSS 파일 참조 -->
 </head>
 <body>
     <h2>투표 결과</h2>
     <div id="resultsContainer"></div>
 
+    <!-- 결과 페이지로 리디렉션하기 전 로그인 여부 체크 -->
     <script>
-        async function fetchResults() {
-            try {
-                const response = await fetch('http://localhost:5500/results');
-                const data = await response.json();
-                displayResults(data);
-            } catch (error) {
-                console.error('결과를 가져오는 중 오류 발생:', error);
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                window.location.href = 'login.html';  // 로그인 페이지로 리디렉션
             }
         }
-
-        function displayResults(data) {
-            const container = document.getElementById('resultsContainer');
-            container.innerHTML = ''; // 이전 결과 지우기.
-
-            for (const [option, count] of Object.entries(data)) {
-                const percentage = ((count / getTotalVotes(data)) * 100).toFixed(2);
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'result-bar';
-                resultDiv.style.width = `${percentage}%`;
-                resultDiv.textContent = `${option}: ${count}표 (${percentage}%)`;
-                container.appendChild(resultDiv);
-            }
-        }
-
-        function getTotalVotes(data) {
-            return Object.values(data).reduce((acc, count) => acc + count, 0);
-        }
-
-        fetchResults(); // 페이지 로드 시 투표 결과 가져오기
+        window.onload = checkLoginStatus;
     </script>
+
+    <script src="js/result.js"></script>  <!-- 외부 JavaScript 파일 참조 -->
 </body>
 </html>
