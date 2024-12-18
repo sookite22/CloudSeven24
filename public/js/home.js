@@ -1,48 +1,80 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const homeBtn = document.getElementById('home-btn');
-    const sidebar = document.getElementById('sidebar');
-    const closeBtn = document.getElementById('close-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const createVoteBtn = document.getElementById('create-vote-btn');
+// home.js
+window.onload = function() {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId') || '사용자'; // 기본값 설정
+    const loginBtn = document.getElementById("login-btn");
 
-    // 로그인 상태 확인
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
-    // 로그인 여부에 따라 홈 버튼 텍스트 변경
-    if (isLoggedIn === 'true') {
-        homeBtn.textContent = 'Home';
+    if (token && userId && userId !== '사용자') {
+        // 로그인 상태: 로그인 버튼을 사용자 아이디로 변경
+        loginBtn.textContent = `${userId} 님`;
+        loginBtn.onclick = function() {
+            alert("이미 로그인되어 있습니다.");
+        };
     } else {
-        homeBtn.textContent = '로그인';
-        homeBtn.addEventListener('click', () => {
+        // 로그인되지 않은 상태
+        loginBtn.textContent = '로그인';
+        loginBtn.onclick = function() {
             window.location.href = 'login.html';
-        });
-        return; // 로그인하지 않은 경우 아래 코드는 실행하지 않음
+        };
     }
 
-    // 네비게이션 바 열기
-    homeBtn.addEventListener('click', function () {
-        sidebar.style.width = '250px';
-    });
-
-    // 네비게이션 바 닫기
-    closeBtn.addEventListener('click', function () {
-        sidebar.style.width = '0';
-    });
-
-    // 로그아웃 버튼 클릭 시
+    // 로그아웃 버튼 처리
+    const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('username');
-            alert('로그아웃 되었습니다.');
-            window.location.href = 'login.html';
+        logoutBtn.addEventListener("click", function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            window.location.reload();
         });
     }
 
-    // 새 투표 생성 버튼 클릭 시 vote.html로 이동
+    // + 새 투표 생성 버튼 처리
+    const createVoteBtn = document.getElementById("create-vote-btn");
     if (createVoteBtn) {
-        createVoteBtn.addEventListener('click', () => {
-            window.location.href = 'create.html';
+        createVoteBtn.addEventListener("click", function() {
+            if (!localStorage.getItem('token')) {
+                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                window.location.href = 'login.html'; // 로그인 페이지로 리다이렉트
+            } else {
+                alert('새로운 투표 방을 생성합니다!');
+                // 새 투표 생성 로직 추가 가능
+            }
         });
     }
+
+    // 가짜 투표 리스트 추가
+    loadFakeVoteList();
+};
+
+// 가짜 투표 리스트 함수
+function loadFakeVoteList() {
+    const fakeVotes = [
+        { id: 1, title: "최고의 영화는?", deadline: "2024-12-31" },
+        { id: 2, title: "점심 메뉴 투표", deadline: "2024-12-25" },
+        { id: 3, title: "이번 주말 활동", deadline: "2024-12-28" },
+        { id: 4, title: "개발자 도구 선호도", deadline: "2025-01-10" }
+    ];
+
+    fakeVotes.forEach(addVoteToList);
+}
+
+// 투표 항목을 리스트에 추가하는 함수
+function addVoteToList(vote) {
+    const voteList = document.getElementById('vote-items');
+    const voteItem = document.createElement('li');
+    voteItem.className = 'vote-item';
+    voteItem.innerHTML = ` 
+        <span class="vote-title">${vote.title}</span>
+        <span class="vote-deadline">마감: ${vote.deadline}</span>
+        <button class="vote-btn" onclick="alert('투표 ID: ${vote.id}')">투표 참여</button>
+    `;
+    voteList.appendChild(voteItem);
+}
+
+// 사이드바 열기/닫기 핸들러
+document.getElementById("menu-btn").addEventListener("click", function() {
+    document.getElementById("sidebar").classList.add("active");
+});
+document.getElementById("close-btn").addEventListener("click", function() {
+    document.getElementById("sidebar").classList.remove("active");
 });
