@@ -1,106 +1,11 @@
+<!-- home.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PickIt - Home</title>
-    <link rel="stylesheet" href="css/home.css">
-    <style>
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .logo {
-            font-size: 24px;
-            color: #333;
-        }
-        .login-btn, .menu-btn {
-            background-color: #007bff;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 8px 12px;
-            transition: background-color 0.3s ease;
-        }
-        .login-btn:hover, .menu-btn:hover {
-            background-color: #0056b3;
-        }
-        .menu-btn {
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-        }
-        .right-buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 140px;
-            height: 100%;
-            background: #333;
-            color: #fff;
-            padding: 15px;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-        }
-        .sidebar.active {
-            transform: translateX(0);
-        }
-        .close-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-        .vote-list {
-            width: 36%;
-            margin: 0 auto;
-        }
-        .vote-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .vote-title {
-            font-size: 16px;
-            flex-grow: 1;
-        }
-        .vote-deadline {
-            font-size: 14px;
-            color: #666;
-            margin-left: 8px;
-            margin-right: 10px;
-        }
-        .vote-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
-        .vote-btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="css/home.css">  <!-- 외부 CSS 파일 참조 -->
 </head>
 <body>
     <!-- 헤더 -->
@@ -139,72 +44,6 @@
         </div>
     </div>
 
-    <script>
-        // 로그인 버튼 클릭 시 로그인 페이지로 이동
-        document.getElementById("login-btn").addEventListener("click", function() {
-            window.location.href = 'login.html';
-        });
-
-        // + 새 투표 생성 버튼 클릭 시 로그인 여부 확인 및 방 생성 요청
-        document.getElementById("create-vote-btn").addEventListener("click", async function() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('로그인이 필요합니다.');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            const newVoteData = {
-                title: "새로운 투표 제목",
-                options: ["옵션 1", "옵션 2"],
-                selectionType: "single",
-                deadline: "2024-12-31"
-            };
-
-            try {
-                const response = await fetch('http://3.36.90.156:3000/create-vote', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(newVoteData)
-                });
-                const result = await response.json();
-
-                if (response.ok) {
-                    addVoteToList(result); // 성공 시 새 항목 추가
-                    alert('새로운 투표 방이 생성되었습니다!');
-                } else {
-                    alert(result.message || '투표 방 생성 실패. 다시 시도해주세요.');
-                }
-            } catch (error) {
-                console.error('오류 발생:', error);
-                alert('서버와 연결하는 데 문제가 발생했습니다.');
-            }
-        });
-
-        // 새로운 방을 리스트에 추가하는 함수
-        function addVoteToList(vote) {
-            const voteList = document.getElementById('vote-items');
-            const voteItem = document.createElement('li');
-            voteItem.className = 'vote-item';
-            voteItem.innerHTML = `
-                <span class="vote-title">${vote.title}</span>
-                <span class="vote-deadline">마감: ${vote.deadline}</span>
-                <button class="vote-btn" onclick="location.href='vote.html?id=${vote.id}'">투표 참여</button>
-            `;
-            const createNewItem = document.getElementById('create-vote-btn');
-            voteList.insertBefore(voteItem, createNewItem);
-        }
-
-        // 사이드바 열기/닫기 핸들러
-        document.getElementById("menu-btn").addEventListener("click", function() {
-            document.getElementById("sidebar").classList.add("active");
-        });
-        document.getElementById("close-btn").addEventListener("click", function() {
-            document.getElementById("sidebar").classList.remove("active");
-        });
-    </script>
+    <script src="js/home.js"></script>  <!-- 외부 JavaScript 파일 참조 -->
 </body>
 </html>
