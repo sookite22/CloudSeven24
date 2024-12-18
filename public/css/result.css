@@ -1,0 +1,31 @@
+/* result.css */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.result-bar {
+    background-color: #007bff;
+    color: white;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 0%;  /* 너비는 동적으로 조정 */
+    transition: width 1s ease;
+    font-size: 18px;
+}
+
+#resultsContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
